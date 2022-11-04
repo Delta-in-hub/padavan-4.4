@@ -61,8 +61,8 @@ getconfig() {
     cat >"$adg_file" <<-\EEE
 bind_host: 0.0.0.0
 bind_port: 3030
-auth_name: adguardhome
-auth_pass: adguardhome
+auth_name: admin
+auth_pass: admin
 language: zh-cn
 rlimit_nofile: 0
 dns:
@@ -123,21 +123,24 @@ schema_version: 3
 
 EEE
     chmod 755 "$adg_file"
+    logger -t "AdGuardHome" "Construct /etc/storage/adg.sh"
   fi
+  logger -t "AdGuardHome" "配置文件/etc/storage/adg.sh存在"
 }
 
 start_adg() {
   mkdir -p /tmp/AdGuardHome
-  mkdir -p /etc/storage/AdGuardHome
   logger -t "AdGuardHome" "AdGuard Home v0.108.0-b.20"
-  if [ ! -f "/tmp/AdGuardHome/AdGuardHome" ]; then
-    cp /usr/bin/AdGuardHome /tmp/AdGuardHome/AdGuardHome
+  if [ ! -f "/usr/bin/AdGuardHome" ]; then
+    # cp /usr/bin/AdGuardHome /tmp/AdGuardHome/AdGuardHome
+    logger -t "AdGuardHome" "AdGuardHome not found!!!!"
+    exit 1
   fi
   getconfig
   change_dns
   set_iptable
   logger -t "AdGuardHome" "AdGuardHome开始运行, listen port must be 5335."
-  eval "/tmp/AdGuardHome/AdGuardHome -c $adg_file -w /tmp/AdGuardHome -v" &
+  eval "/usr/bin/AdGuardHome -c $adg_file -w /tmp/AdGuardHome -v | logger -t 'AdGuardHome'" &
 
 }
 stop_adg() {
