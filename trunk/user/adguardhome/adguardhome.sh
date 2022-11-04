@@ -140,7 +140,7 @@ start_adg() {
   change_dns
   set_iptable
   logger -t "AdGuardHome" "AdGuardHome开始运行, listen port must be 5335."
-  eval "/usr/bin/AdGuardHome -c $adg_file -w /tmp/AdGuardHome 2>&1 | logger -t 'AdGuardHome' " &
+  eval "/usr/bin/AdGuardHome -c $adg_file -w /tmp/AdGuardHome -l syslog " &
 
 }
 stop_adg() {
